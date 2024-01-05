@@ -1,0 +1,10 @@
+
+query IssuesQuery {
+  issues {
+    edges {
+      node {
+        title
+      }
+    }
+  }
+}
