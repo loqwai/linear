@@ -5,11 +5,8 @@ query IssuesQuery($team_name: String!) {
       team: { name: { eq: $team_name } }
     }
   ) {
-    edges {
-      node {
-        identifier
-        title
-      }
+    nodes {
+      ...issueFields
     }
   }
   todo: issues(
@@ -18,11 +15,13 @@ query IssuesQuery($team_name: String!) {
       team: { name: { eq: $team_name } }
     }
   ) {
-    edges {
-      node {
-        identifier
-        title
-      }
+    nodes {
+      ...issueFields
     }
   }
+}
+
+fragment issueFields on Issue {
+  identifier
+  title
 }

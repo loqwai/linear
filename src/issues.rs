@@ -15,6 +15,15 @@ pub(crate) struct Issue {
     pub(crate) title: String,
 }
 
+impl From<&issues_query::IssuesQueryInProgressNodes> for Issue {
+    fn from(value: &issues_query::IssuesQueryInProgressNodes) -> Self {
+        Self {
+            identifier: value.identifier.clone(),
+            title: value.title.clone(),
+        }
+    }
+}
+
 pub(crate) struct Issues {
     pub(crate) in_progress: Vec<Issue>,
     pub(crate) todo: Vec<Issue>,
@@ -33,25 +42,8 @@ pub(crate) fn fetch(api_key: &str, team_name: &str) -> Result<Issues, FetchError
     let response: Response<issues_query::ResponseData> = graphql_fetch(api_key, &request_body)?;
     let data = response.data.ok_or(FetchError::NoDataError)?;
 
-    let in_progress: Vec<Issue> = data
-        .in_progress
-        .edges
-        .iter()
-        .map(|edge| Issue {
-            identifier: edge.node.identifier.clone(),
-            title: edge.node.title.clone(),
-        })
-        .collect();
-
-    let todo: Vec<Issue> = data
-        .todo
-        .edges
-        .iter()
-        .map(|edge| Issue {
-            identifier: edge.node.identifier.clone(),
-            title: edge.node.title.clone(),
-        })
-        .collect();
+    let in_progress: Vec<Issue> = data.in_progress.nodes.iter().map(Issue::from).collect();
+    let todo: Vec<Issue> = data.todo.nodes.iter().map(Issue::from).collect();
 
     return Ok(Issues { in_progress, todo });
 }
