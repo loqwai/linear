@@ -34,7 +34,7 @@ fn main() {
 }
 
 fn list_issues(api_key: &str, team_name: &str) {
-    let issues = issues::fetch(api_key, team_name).expect("Failed to fetch issues");
+    let issues = issues::list(api_key, team_name).expect("Failed to fetch issues");
 
     println!("In Progress");
     println!("===========");
