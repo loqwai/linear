@@ -7,7 +7,7 @@ use graphql_client::{GraphQLQuery, Response};
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "src/schema.graphql",
-    query_path = "src/issues.graphql",
+    query_path = "src/issues/list.graphql",
     response_derives = "Debug"
 )]
 pub(crate) struct IssuesQuery;
@@ -53,7 +53,7 @@ pub(crate) fn fetch(api_key: &str, team_name: &str) -> Result<Issues, FetchError
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "src/schema.graphql",
-    query_path = "src/get_claim_issue_ids.graphql",
+    query_path = "src/issues/get_claim_ids.graphql",
     response_derives = "Debug"
 )]
 
@@ -62,7 +62,7 @@ pub(crate) struct GetClaimIssueIdsQuery;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "src/schema.graphql",
-    query_path = "src/claim_issue.graphql",
+    query_path = "src/issues/claim.graphql",
     response_derives = "Debug"
 )]
 
