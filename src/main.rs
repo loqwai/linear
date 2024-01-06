@@ -11,7 +11,17 @@ fn main() {
 
     let issues = issues::fetch(&api_key, &team_name).expect("Failed to fetch issues");
 
-    for issue in issues {
+    println!("\n");
+    println!("In Progress");
+    println!("===========");
+    for issue in issues.in_progress {
+        println!("{}: {}", issue.identifier, issue.title);
+    }
+
+    println!("\n");
+    println!("Todo");
+    println!("====");
+    for issue in issues.todo {
         println!("{}: {}", issue.identifier, issue.title);
     }
 }

@@ -1,6 +1,23 @@
-
 query IssuesQuery($team_name: String!) {
-  issues(filter: {team: {name: {eq: $team_name}}}) {
+  in_progress: issues(
+    filter: {
+      state: { name: { eq: "In Progress" } }
+      team: { name: { eq: $team_name } }
+    }
+  ) {
+    edges {
+      node {
+        identifier
+        title
+      }
+    }
+  }
+  todo: issues(
+    filter: {
+      state: { name: { eq: "Todo" } }
+      team: { name: { eq: $team_name } }
+    }
+  ) {
     edges {
       node {
         identifier
