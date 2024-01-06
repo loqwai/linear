@@ -1,0 +1,12 @@
+mutation ClaimIssueMutation(
+  $issue_id: String!
+  $state_id: String!
+  $user_id: String!
+) {
+  issueUpdate(
+    id: $issue_id
+    input: { stateId: $state_id, assigneeId: $user_id }
+  ) {
+    success
+  }
+}

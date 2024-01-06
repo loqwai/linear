@@ -15,7 +15,10 @@ struct Args {
 
 #[derive(Debug, Subcommand)]
 enum Command {
-    Issues,
+    /// list issues that are "In Progress" & "Todo"
+    List,
+    /// Move an issue to "In Progress"
+    Claim { identifier: String },
 }
 
 fn main() {
@@ -25,7 +28,8 @@ fn main() {
 
     let args = Args::parse();
     match args.command {
-        Command::Issues => list_issues(&api_key, &team_name),
+        Command::List => list_issues(&api_key, &team_name),
+        Command::Claim { identifier } => claim_issue(&api_key, &team_name, &identifier),
     }
 }
 
@@ -44,4 +48,8 @@ fn list_issues(api_key: &str, team_name: &str) {
     for issue in issues.todo {
         println!("[{}] {}", issue.identifier, issue.title);
     }
+}
+
+fn claim_issue(api_key: &str, team_name: &str, identifier: &str) {
+    issues::claim(api_key, team_name, identifier).expect("Failed to claim issue");
 }

@@ -1,0 +1,27 @@
+query GetClaimIssueIdsQuery($team_name: String!, $issue_number: Float!) {
+  issues(
+    filter: {
+      team: { name: { eq: $team_name } }
+      number: { eq: $issue_number }
+      state: { name: { eq: "Todo" } }
+    }
+  ) {
+    nodes {
+      id
+      identifier
+    }
+  }
+
+  states: workflowStates(
+    filter: { team: { name: { eq: $team_name } }, name: { eq: "In Progress" } }
+  ) {
+    nodes {
+      id
+      name
+    }
+  }
+
+  viewer {
+    id
+  }
+}
