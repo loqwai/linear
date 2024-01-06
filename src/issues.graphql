@@ -1,8 +1,9 @@
 
-query IssuesQuery {
-  issues {
+query IssuesQuery($team_name: String!) {
+  issues(filter: {team: {name: {eq: $team_name}}}) {
     edges {
       node {
+        identifier
         title
       }
     }
