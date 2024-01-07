@@ -29,12 +29,13 @@ fn main() {
     let config = config::get_config().expect("Unable to get config");
     let api_key = config.api_key;
     let team_name = config.team_name;
+    let current_issue_identifier = config.current_issue;
 
     let args = Args::parse();
     match args.command {
         Command::List => list_issues(&api_key, &team_name),
         Command::Claim { identifier } => claim_issue(&api_key, &team_name, &identifier),
-        Command::Current => todo!(),
+        Command::Current => current_issue(&api_key, &team_name, &current_issue_identifier),
     }
 }
 
@@ -61,4 +62,13 @@ fn claim_issue(api_key: &str, team_name: &str, identifier: &str) {
     issues::claim(api_key, team_name, identifier).expect("Failed to claim issue");
     config.current_issue = Some(identifier.to_string());
     store_config(&config).expect("Failed to store current issue in config");
+}
+
+fn current_issue(api_key: &str, team_name: &str, current_issue_identifier: &Option<String>) {
+    let current_issue_identifier = current_issue_identifier.clone().expect("No current issue identifier in config.toml. Use `linear claim <identifier>` or set it in the config manually");
+
+    let issue = issues::get_by_identifier(&api_key, &team_name, &current_issue_identifier)
+        .expect("Failed ot fetch current issue info");
+
+    println!("[{}] {}", issue.identifier, issue.title);
 }

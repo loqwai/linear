@@ -2,6 +2,8 @@ use crate::graphql_fetch::{graphql_fetch, GraphqlFetchError};
 use derive_error::Error;
 use graphql_client::{GraphQLQuery, Response};
 
+use super::issue::Issue;
+
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "src/schema.graphql",
@@ -9,11 +11,6 @@ use graphql_client::{GraphQLQuery, Response};
     response_derives = "Debug"
 )]
 pub(crate) struct IssuesQuery;
-
-pub(crate) struct Issue {
-    pub(crate) identifier: String,
-    pub(crate) title: String,
-}
 
 impl From<&issues_query::IssuesQueryInProgressNodes> for Issue {
     fn from(value: &issues_query::IssuesQueryInProgressNodes) -> Self {
