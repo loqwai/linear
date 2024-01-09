@@ -3,7 +3,6 @@ query GetClaimIssueIdsQuery($team_name: String!, $issue_number: Float!) {
     filter: {
       team: { name: { eq: $team_name } }
       number: { eq: $issue_number }
-      state: { name: { eq: "Todo" } }
     }
   ) {
     nodes {
@@ -12,8 +11,20 @@ query GetClaimIssueIdsQuery($team_name: String!, $issue_number: Float!) {
     }
   }
 
-  states: workflowStates(
+  inProgressStates: workflowStates(
     filter: { team: { name: { eq: $team_name } }, name: { eq: "In Progress" } }
+  ) {
+    nodes {
+      id
+      name
+    }
+  }
+
+  blockedByReviewStates: workflowStates(
+    filter: {
+      team: { name: { eq: $team_name } }
+      name: { eq: "Blocked by Review" }
+    }
   ) {
     nodes {
       id

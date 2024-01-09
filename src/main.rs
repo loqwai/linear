@@ -22,7 +22,24 @@ enum Command {
     Claim { identifier: String },
 
     /// Actions for interacting with the current issue.
-    Current,
+    Current {
+        #[clap(subcommand)]
+        command: Option<CurrentCommand>,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+enum CurrentCommand {
+    /// Show the current issue
+    Show,
+    // /// Move the current issue to "Done"
+    // Done,
+    /// Move the current issue to "Blocked by Review"
+    Review,
+    // /// Move the current issue to "In Progress"
+    // Progress,
+    // /// Move the current issue to "Todo"
+    // Todo,
 }
 
 fn main() {
@@ -35,7 +52,17 @@ fn main() {
     match args.command {
         Command::List => list_issues(&api_key, &team_name),
         Command::Claim { identifier } => claim_issue(&api_key, &team_name, &identifier),
-        Command::Current => current_issue(&api_key, &team_name, &current_issue_identifier),
+        Command::Current { command } => match command {
+            Some(subcommand) => match subcommand {
+                CurrentCommand::Show => {
+                    current_issue(&api_key, &team_name, &current_issue_identifier)
+                }
+                CurrentCommand::Review => {
+                    move_issue_to_review(&api_key, &team_name, &current_issue_identifier)
+                }
+            },
+            None => current_issue(&api_key, &team_name, &current_issue_identifier),
+        },
     }
 }
 
@@ -71,4 +98,11 @@ fn current_issue(api_key: &str, team_name: &str, current_issue_identifier: &Opti
         .expect("Failed to fetch current issue info");
 
     println!("[{}] {}", issue.identifier, issue.title);
+}
+
+fn move_issue_to_review(api_key: &str, team_name: &str, current_issue_identifier: &Option<String>) {
+    let current_issue_identifier = current_issue_identifier.clone().expect("No current issue identifier in config.toml. Use `linear claim <identifier>` or set it in the config manually");
+
+    issues::move_to_review(api_key, team_name, &current_issue_identifier)
+        .expect("Failed to move issue to review");
 }
