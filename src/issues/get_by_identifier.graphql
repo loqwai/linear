@@ -3,7 +3,6 @@ query IssueByIdentifierQuery($team_name: String!, $issue_number: Float!) {
     filter: {
       team: { name: { eq: $team_name } }
       number: { eq: $issue_number }
-      state: { name: { eq: "Todo" } }
     }
   ) {
     nodes {

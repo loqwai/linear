@@ -68,7 +68,7 @@ fn current_issue(api_key: &str, team_name: &str, current_issue_identifier: &Opti
     let current_issue_identifier = current_issue_identifier.clone().expect("No current issue identifier in config.toml. Use `linear claim <identifier>` or set it in the config manually");
 
     let issue = issues::get_by_identifier(&api_key, &team_name, &current_issue_identifier)
-        .expect("Failed ot fetch current issue info");
+        .expect("Failed to fetch current issue info");
 
     println!("[{}] {}", issue.identifier, issue.title);
 }
