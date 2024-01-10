@@ -23,7 +23,6 @@ pub(crate) struct MoveIssueIds {
 #[derive(Debug, Error)]
 pub(crate) enum GetMoveIssueIdsError {
     GraphqlFetchError(GraphqlFetchError),
-    MalformedIssueIdentifier,
     ParseFloatError(ParseFloatError),
     QueryIdsNoData,
 
@@ -41,7 +40,7 @@ pub(crate) fn get_move_issue_ids(
 ) -> Result<MoveIssueIds, GetMoveIssueIdsError> {
     let issue_number: f64 = identifier
         .split_once('-')
-        .ok_or(GetMoveIssueIdsError::MalformedIssueIdentifier)?
+        .unwrap_or(("", identifier))
         .1
         .parse()?;
 

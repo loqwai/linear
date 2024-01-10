@@ -15,7 +15,6 @@ pub(crate) struct IssueByIdentifierQuery;
 
 #[derive(Debug, Error)]
 pub(crate) enum GetByIdentifierError {
-    MalformedIssueIdentifier,
     GraphqlFetchError(GraphqlFetchError),
     NoData,
     IssueNotFound,
@@ -30,7 +29,7 @@ pub(crate) fn get_by_identifier(
 ) -> Result<Issue, GetByIdentifierError> {
     let issue_number: f64 = identifier
         .split_once('-')
-        .ok_or(GetByIdentifierError::MalformedIssueIdentifier)?
+        .unwrap_or(("", identifier))
         .1
         .parse()?;
 
