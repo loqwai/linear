@@ -17,6 +17,7 @@ impl From<&issues_query::IssuesQueryInProgressNodes> for Issue {
         Self {
             identifier: value.identifier.clone(),
             title: value.title.clone(),
+            url: value.url.clone(),
         }
     }
 }

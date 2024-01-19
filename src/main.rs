@@ -4,6 +4,8 @@ mod config;
 mod graphql_fetch;
 mod issues;
 
+use std::io::IsTerminal;
+
 use clap::{Parser, Subcommand};
 use config::{get_config, store_config};
 
@@ -40,6 +42,8 @@ enum CurrentCommand {
     // Progress,
     // /// Move the current issue to "Todo"
     // Todo,
+    /// Print the current issue's url
+    Url,
 }
 
 fn main() {
@@ -59,6 +63,9 @@ fn main() {
                 }
                 CurrentCommand::Review => {
                     move_issue_to_review(&api_key, &team_name, &current_issue_identifier)
+                }
+                CurrentCommand::Url => {
+                    print_current_issue_url(&api_key, &team_name, &current_issue_identifier)
                 }
             },
             None => current_issue(&api_key, &team_name, &current_issue_identifier),
@@ -97,7 +104,7 @@ fn current_issue(api_key: &str, team_name: &str, current_issue_identifier: &Opti
     let issue = issues::get_by_identifier(&api_key, &team_name, &current_issue_identifier)
         .expect("Failed to fetch current issue info");
 
-    println!("[{}] {}", issue.identifier, issue.title);
+    output_single_line(format!("[{}] {}", issue.identifier, issue.title))
 }
 
 fn move_issue_to_review(api_key: &str, team_name: &str, current_issue_identifier: &Option<String>) {
@@ -105,4 +112,26 @@ fn move_issue_to_review(api_key: &str, team_name: &str, current_issue_identifier
 
     issues::move_to_review(api_key, team_name, &current_issue_identifier)
         .expect("Failed to move issue to review");
+}
+
+fn print_current_issue_url(
+    api_key: &str,
+    team_name: &str,
+    current_issue_identifier: &Option<String>,
+) {
+    let current_issue_identifier = current_issue_identifier.clone().expect("No current issue identifier in config.toml. Use `linear claim <identifier>` or set it in the config manually");
+
+    let issue = issues::get_by_identifier(&api_key, &team_name, &current_issue_identifier)
+        .expect("Failed to fetch current issue info");
+
+    output_single_line(issue.url);
+}
+
+/// Prints the line to stdout. If stdout is a terminal, appends a newline.
+fn output_single_line(line: String) {
+    if std::io::stdout().is_terminal() {
+        println!("{}", line);
+    } else {
+        print!("{}", line);
+    }
 }

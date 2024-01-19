@@ -24,4 +24,5 @@ query IssuesQuery($team_name: String!) {
 fragment issueFields on Issue {
   identifier
   title
+  url
 }

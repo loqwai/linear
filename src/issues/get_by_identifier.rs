@@ -52,5 +52,6 @@ pub(crate) fn get_by_identifier(
     return Ok(Issue {
         identifier: issue.identifier,
         title: issue.title,
+        url: issue.url,
     });
 }

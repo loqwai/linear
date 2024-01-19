@@ -9,6 +9,7 @@ query IssueByIdentifierQuery($team_name: String!, $issue_number: Float!) {
       id
       identifier
       title
+      url
     }
   }
 }
