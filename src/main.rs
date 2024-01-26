@@ -44,6 +44,10 @@ enum CurrentCommand {
     // Todo,
     /// Print the current issue's url
     Url,
+
+    /// Print a markdown link to the current issue
+    #[command(alias = "md")]
+    Markdown,
 }
 
 fn main() {
@@ -67,6 +71,11 @@ fn main() {
                 CurrentCommand::Url => {
                     print_current_issue_url(&api_key, &team_name, &current_issue_identifier)
                 }
+                CurrentCommand::Markdown => print_current_issue_markdown_url(
+                    &api_key,
+                    &team_name,
+                    &current_issue_identifier,
+                ),
             },
             None => current_issue(&api_key, &team_name, &current_issue_identifier),
         },
@@ -125,6 +134,22 @@ fn print_current_issue_url(
         .expect("Failed to fetch current issue info");
 
     output_single_line(issue.url);
+}
+
+fn print_current_issue_markdown_url(
+    api_key: &str,
+    team_name: &str,
+    current_issue_identifier: &Option<String>,
+) {
+    let current_issue_identifier = current_issue_identifier.clone().expect("No current issue identifier in config.toml. Use `linear claim <identifier>` or set it in the config manually");
+
+    let issue = issues::get_by_identifier(&api_key, &team_name, &current_issue_identifier)
+        .expect("Failed to fetch current issue info");
+
+    output_single_line(format!(
+        "[[{}] {}]({})",
+        issue.identifier, issue.title, issue.url
+    ));
 }
 
 /// Prints the line to stdout. If stdout is a terminal, appends a newline.
