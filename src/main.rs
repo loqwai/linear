@@ -20,10 +20,13 @@ struct Args {
 enum Command {
     /// list issues that are "In Progress" & "Todo"
     List,
+
     /// Move an issue to "In Progress", store it as current
-    Claim { identifier: String },
+    #[command(alias = "d")]
+    Dibs { identifier: String },
 
     /// Actions for interacting with the current issue.
+    #[command(alias = "c")]
     Current {
         #[clap(subcommand)]
         command: Option<CurrentCommand>,
@@ -33,16 +36,19 @@ enum Command {
 #[derive(Debug, Subcommand)]
 enum CurrentCommand {
     /// Show the current issue
+    #[command(alias = "s")]
     Show,
     // /// Move the current issue to "Done"
     // Done,
     /// Move the current issue to "Blocked by Review"
+    #[command(alias = "r")]
     Review,
     // /// Move the current issue to "In Progress"
     // Progress,
     // /// Move the current issue to "Todo"
     // Todo,
     /// Print the current issue's url
+    #[command(alias = "u")]
     Url,
 
     /// Print a markdown link to the current issue
@@ -59,7 +65,7 @@ fn main() {
     let args = Args::parse();
     match args.command {
         Command::List => list_issues(&api_key, &team_name),
-        Command::Claim { identifier } => claim_issue(&api_key, &team_name, &identifier),
+        Command::Dibs { identifier } => claim_issue(&api_key, &team_name, &identifier),
         Command::Current { command } => match command {
             Some(subcommand) => match subcommand {
                 CurrentCommand::Show => {
