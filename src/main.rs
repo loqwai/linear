@@ -31,6 +31,10 @@ enum Command {
         #[clap(subcommand)]
         command: Option<CurrentCommand>,
     },
+
+    /// Generate the markdown for any issue
+    #[command(alias = "md")]
+    Markdown { identifier: String },
 }
 
 #[derive(Debug, Subcommand)]
@@ -85,6 +89,9 @@ fn main() {
             },
             None => current_issue(&api_key, &team_name, &current_issue_identifier),
         },
+        Command::Markdown { identifier } => {
+            print_current_issue_markdown_url(&api_key, &team_name, &Some(identifier))
+        }
     }
 }
 
