@@ -19,6 +19,7 @@ struct Args {
 #[derive(Debug, Subcommand)]
 enum Command {
     /// list issues that are "In Progress" & "Todo"
+    #[command(alias = "ls")]
     List,
 
     /// Move an issue to "In Progress", store it as current
