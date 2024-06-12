@@ -22,9 +22,9 @@ enum Command {
     #[command(alias = "ls")]
     List,
 
-    /// Move an issue to "In Progress", store it as current
+    /// Move an issue to "In Progress", store it as current.
     #[command(alias = "d")]
-    Dibs { identifier: String },
+    Dibs { identifier: Option<String> },
 
     /// Actions for interacting with the current issue.
     #[command(alias = "c")]
@@ -70,7 +70,18 @@ fn main() {
     let args = Args::parse();
     match args.command {
         Command::List => list_issues(&api_key, &team_name),
-        Command::Dibs { identifier } => claim_issue(&api_key, &team_name, &identifier),
+        Command::Dibs { identifier } => {
+            let identifier = identifier.unwrap_or_else(|| {
+                issues::list(&api_key, &team_name)
+                    .expect("Failed to fetch issues")
+                    .todo
+                    .first()
+                    .expect("No issues in todo")
+                    .identifier
+                    .clone()
+            });
+            claim_issue(&api_key, &team_name, &identifier)
+        }
         Command::Current { command } => match command {
             Some(subcommand) => match subcommand {
                 CurrentCommand::Show => {
