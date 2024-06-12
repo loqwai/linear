@@ -80,7 +80,8 @@ fn main() {
                     .identifier
                     .clone()
             });
-            claim_issue(&api_key, &team_name, &identifier)
+            claim_issue(&api_key, &team_name, &identifier);
+            current_issue(&api_key, &team_name, &Some(identifier))
         }
         Command::Current { command } => match command {
             Some(subcommand) => match subcommand {
