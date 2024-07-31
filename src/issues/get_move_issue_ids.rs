@@ -16,7 +16,7 @@ struct GetClaimIssueIdsQuery;
 pub(crate) struct MoveIssueIds {
     pub(crate) issue_id: String,
     pub(crate) in_progress_state_id: String,
-    pub(crate) blocked_by_review_state_id: String,
+    pub(crate) blocked_by_review_state_id: Option<String>,
     pub(crate) user_id: String,
 }
 
@@ -70,9 +70,9 @@ pub(crate) fn get_move_issue_ids(
 
     let num_matched_states = data.blocked_by_review_states.nodes.len();
     let blocked_by_review_state_id = match data.blocked_by_review_states.nodes {
-        _ if num_matched_states == 0 => return Err(GetMoveIssueIdsError::StateNotFound),
+        _ if num_matched_states == 0 => None,
         _ if num_matched_states > 1 => return Err(GetMoveIssueIdsError::MultipleStatesFound),
-        states => states[0].id.to_string(),
+        states => Some(states[0].id.to_string()),
     };
 
     let user_id = data.viewer.id;

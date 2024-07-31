@@ -19,6 +19,7 @@ pub(crate) enum MoveToReviewError {
     GraphqlFetchError(GraphqlFetchError),
     NoData,
     FailedToMoveIssue,
+    NoBlockedByReviewState,
 }
 
 pub(crate) fn move_to_review(
@@ -30,7 +31,9 @@ pub(crate) fn move_to_review(
 
     let request_body = MoveToReviewMutation::build_query(move_to_review_mutation::Variables {
         issue_id: ids.issue_id,
-        state_id: ids.blocked_by_review_state_id,
+        state_id: ids
+            .blocked_by_review_state_id
+            .ok_or(MoveToReviewError::NoBlockedByReviewState)?,
     });
 
     let response: Response<move_to_review_mutation::ResponseData> =
