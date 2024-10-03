@@ -36,6 +36,10 @@ enum Command {
     /// Generate the markdown for any issue
     #[command(alias = "md")]
     Markdown { identifier: String },
+
+    /// Show the title of any issue
+    #[command(alias = "s")]
+    Show { identifier: String },
 }
 
 #[derive(Debug, Subcommand)]
@@ -105,6 +109,9 @@ fn main() {
         Command::Markdown { identifier } => {
             print_current_issue_markdown_url(&api_key, &team_name, &Some(identifier))
         }
+        Command::Show { identifier } => {
+            print_current_issue_title(&api_key, &team_name, &identifier)
+        }
     }
 }
 
@@ -135,11 +142,7 @@ fn claim_issue(api_key: &str, team_name: &str, identifier: &str) {
 
 fn current_issue(api_key: &str, team_name: &str, current_issue_identifier: &Option<String>) {
     let current_issue_identifier = current_issue_identifier.clone().expect("No current issue identifier in config.toml. Use `linear claim <identifier>` or set it in the config manually");
-
-    let issue = issues::get_by_identifier(&api_key, &team_name, &current_issue_identifier)
-        .expect("Failed to fetch current issue info");
-
-    output_single_line(format!("[{}] {}", issue.identifier, issue.title))
+    print_current_issue_title(api_key, team_name, &current_issue_identifier);
 }
 
 fn move_issue_to_review(api_key: &str, team_name: &str, current_issue_identifier: &Option<String>) {
@@ -147,6 +150,13 @@ fn move_issue_to_review(api_key: &str, team_name: &str, current_issue_identifier
 
     issues::move_to_review(api_key, team_name, &current_issue_identifier)
         .expect("Failed to move issue to review");
+}
+
+fn print_current_issue_title(api_key: &str, team_name: &str, current_issue_identifier: &String) {
+    let issue = issues::get_by_identifier(&api_key, &team_name, &current_issue_identifier)
+        .expect("Failed to fetch current issue info");
+
+    output_single_line(format!("[{}] {}", issue.identifier, issue.title))
 }
 
 fn print_current_issue_url(
