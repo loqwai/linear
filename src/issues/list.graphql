@@ -25,4 +25,5 @@ fragment issueFields on Issue {
   identifier
   title
   url
+  sortOrder
 }

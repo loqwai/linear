@@ -18,6 +18,7 @@ impl From<&issues_query::IssuesQueryInProgressNodes> for Issue {
             identifier: value.identifier.clone(),
             title: value.title.clone(),
             url: value.url.clone(),
+            sort_order: value.sort_order.clone(),
         }
     }
 }
@@ -41,7 +42,8 @@ pub(crate) fn list(api_key: &str, team_name: &str) -> Result<Issues, FetchError>
     let data = response.data.ok_or(FetchError::NoDataError)?;
 
     let in_progress: Vec<Issue> = data.in_progress.nodes.iter().map(Issue::from).collect();
-    let todo: Vec<Issue> = data.todo.nodes.iter().map(Issue::from).collect();
+    let mut todo: Vec<Issue> = data.todo.nodes.iter().map(Issue::from).collect();
+    todo.sort_by(|a, b| a.sort_order.partial_cmp(&b.sort_order).unwrap());
 
     return Ok(Issues { in_progress, todo });
 }

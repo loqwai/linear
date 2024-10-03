@@ -10,6 +10,7 @@ query IssueByIdentifierQuery($team_name: String!, $issue_number: Float!) {
       identifier
       title
       url
+      sortOrder
     }
   }
 }

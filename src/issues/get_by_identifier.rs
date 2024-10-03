@@ -53,5 +53,6 @@ pub(crate) fn get_by_identifier(
         identifier: issue.identifier,
         title: issue.title,
         url: issue.url,
+        sort_order: issue.sort_order,
     });
 }
