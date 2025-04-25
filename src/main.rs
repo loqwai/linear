@@ -23,6 +23,7 @@ enum Command {
     List,
 
     /// Move an issue to "In Progress", store it as current.
+    /// If no issue identifier is provided, it will automatically select the top issue from the TODO list.
     #[command(alias = "d")]
     Dibs { identifier: Option<String> },
 
