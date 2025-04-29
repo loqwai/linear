@@ -19,6 +19,7 @@ impl From<&issues_query::IssuesQueryInProgressNodes> for Issue {
             title: value.title.clone(),
             url: value.url.clone(),
             sort_order: value.sort_order.clone(),
+            description: value.description.clone().unwrap_or("".to_string()),
         }
     }
 }
